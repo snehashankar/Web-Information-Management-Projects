@@ -1,0 +1,47 @@
+____________________
+Deleting an index
+____________________
+
+curl -XDELETE 'localhost:9200/task2?pretty'
+
+_________________________________
+Updating settings for an index
+_________________________________
+
+curl -XPOST 'localhost:9200/task2/_close?pretty'
+curl -XPUT 'localhost:9200/task2/_settings?pretty' -H 'Content-Type: application/json' -d'{
+    "index": {
+      "similarity": {
+        "default": {
+          "type": "BM25",
+          "k1" : 0.00,
+          "b" : 0.00
+        }
+      }
+    }
+}' >/dev/null 2>&1
+curl -XPOST 'localhost:9200/task2/_open?pretty'
+
+_______________________
+Creating an index
+_______________________
+
+curl -XPUT 'localhost:9200/task2/?pretty' -d '{
+  "settings": {
+    "index": {
+      "similarity": {
+        "default": {
+          "type": "BM25",
+          "k1" : 1.20,
+          "b" : 0.00
+        }
+      }
+    }
+  }
+}' >/dev/null 2>&1
+
+curl -XPOST 'localhost:9200/task2/wikipage/_bulk?pretty&pretty' -H 'Content-Type: application/json' --data-binary @data/out.json >/dev/null 2>&1
+
+
+
+curl -XGET 'localhost:9200/task1a/_mapping?pretty'
